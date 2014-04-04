@@ -1,0 +1,343 @@
+/*
+ * COSC343 Assignment 1 - Robots on a Chessboard.
+ *
+ * Authors: Nick Dowse, Andrew Ashton
+ *
+ * This program starts on the starting mark and moves the robot a set distance forward to the closest black tile.
+ * It then rotates 90 degrees to the left, moving along 14 black tiles before turning 90 degrees to the right,
+ * moving along another 7 black tiles and then moving forward a set distance to finish on the finishing mark.
+ *
+ */
+
+#define LEFT_MOTOR 		OUT_C
+#define RIGHT_MOTOR 	OUT_B
+
+int black;
+int white;
+
+bool nextTileIsBlack, nextTileIsWhite, isOnBlack;
+int average;
+
+/*
+ * Move Right - This subroutine turns the robot to the right until it reaches the white.
+ * 				If the angle to the right is very small then the robot needs to correct to the left.
+ * 				If that is the case a correction is added to the degrees the robot turns back to the left.
+ * 				The robot then turns back to the left.
+ */
+long move_right(){
+	long degreeRight = MotorRotationCount(LEFT_MOTOR);
+	// until it hits white turn right
+	until (Sensor(IN_1) >= (white - 10)){
+		OnFwd(LEFT_MOTOR, 40);
+	}
+	Off(OUT_BC);
+	degreeRight = MotorRotationCount(LEFT_MOTOR) - degreeRight;
+
+	// Correction if degrees turned is small.
+	if (degreeRight < 60 ){
+		degreeRight+= 25;
+	} else if (degreeRight < 120){
+		degreeRight+= 10;
+	}
+	RotateMotor(LEFT_MOTOR, -40, degreeRight);
+	return degreeRight;
+}
+
+/*
+ * Move Left - This subroutine turns the robot to the left until it reaches the white.
+ * 				If the angle to the left is very small then the robot needs to correct to the right.
+ * 				If that is the case a correction is added to the degrees the robot turns back to the right.
+ */
+long move_left(){
+	long degreeLeft = MotorRotationCount(RIGHT_MOTOR);
+	until (Sensor(IN_1) >= (white - 10)){
+		OnFwd(RIGHT_MOTOR, 40);
+	}
+	Off(OUT_BC);
+	degreeLeft = MotorRotationCount(RIGHT_MOTOR) - degreeLeft;
+	if (degreeLeft < 60 ){
+		degreeLeft+= 25;
+	} else if (degreeLeft < 120){
+		degreeLeft += 10;
+	}
+	return degreeLeft;
+}
+
+/*
+ * Search - This subroutine locates the edges of the black tile it is on and straightens up the robot
+ * 			so it ideally will travel to the centre of the next black tile.
+ * 			It first searches to the right, and measures how far it turns.
+ * 			Then it searches to the left and measures how far it turns. The difference between those two distances
+ * 			is divided by the divisor and added to the degrees to turn back to the right.
+ * 			This ensures that the robot never overcorrects.
+ * 			After aligning the square status variables are reset.
+ *
+ * Parameters:
+ * 		divisor - Determines the size of the degree adjustment we should make.
+ */
+sub search(int divisor){
+	Off(OUT_BC);
+	long degreeRight = move_right();
+	long degreeLeft = move_left();
+	RotateMotor(RIGHT_MOTOR, -40, degreeLeft + ((degreeRight - degreeLeft)/divisor));
+	nextTileIsBlack = false;
+	nextTileIsWhite = true;
+	isOnBlack = true;
+}
+
+/*
+ * Cross Squares - This subroutine moves the robot forward until it reaches the next black square, then
+ * 				   searches for the edges of the black square, straightens up and moves forward to the
+ * 				   next black square
+ *
+ * Parameters:
+ * 		numberToCross - The number of black squares to be crossed
+ * 		divisor - Determines the size of the degree adjustment we should make.
+ */
+sub cross_squares(int numberToCross, int divisor){
+	ClearScreen();
+	TextOut(0, 32, "Crossing Squares");
+
+	bool isFinished = false;
+	int squaresCrossed = 0;
+
+	nextTileIsBlack = false;
+	nextTileIsWhite = true;
+	isOnBlack = true;
+
+	OnFwdSync(OUT_BC, 75, 0);
+	while (!isFinished){
+
+		// If the robot is just reaching a white tile, play tone and set isBlack to false
+		if (Sensor(IN_1) > average && nextTileIsWhite){
+			nextTileIsBlack = true;
+			nextTileIsWhite = false;
+			isOnBlack = false;
+			ClearScreen();
+			TextOut(0, 32, "Crossed: " + NumToStr(squaresCrossed));
+		}
+
+    	// If hitting new black square stop, search and readjust, then increment the number of squares crossed.
+		if ((squaresCrossed < numberToCross) && (Sensor(IN_1) < average) && nextTileIsBlack){
+			ClearScreen();
+			TextOut(0, 32, "Rotate + Search!");
+			RotateMotorEx(OUT_BC, 75, 50, 0, true, true);
+			search(divisor);
+			squaresCrossed++;
+		}
+
+    	// if on black square play tone
+		if ((squaresCrossed < numberToCross) && Sensor(IN_1) < average){
+			ClearScreen();
+			TextOut(0, 32, "On Black");
+			// If travelling the small squares move forward until next black square is reached.
+			if (divisor == 5){
+				ClearScreen();
+				TextOut(0, 32, "On small black");
+				OnFwdSync(OUT_BC, 75, 0);
+				PlayTone(100, 52);
+				nextTileIsWhite = true;
+			} else {
+				// If travelling big squares move forward 800 motor rotations
+				// This avoids the problem of picking up the small black flecks in the grey squares
+				Off(OUT_BC);
+				ClearScreen();
+				TextOut(0, 32, "On big black");
+				RotateMotorEx(OUT_BC, 75, 790, 0, true, true);
+				Off(OUT_BC);
+				nextTileIsWhite = false;
+				nextTileIsBlack = true;
+			}
+		}
+
+		// Counting the squares crossed
+		ClearScreen();
+		TextOut(0, 32, "S " + NumToStr(squaresCrossed) + " N " + NumToStr(numberToCross));
+
+		// If the robot has crossed the number of squares print "Finished Crossing" and return.
+		if (squaresCrossed == numberToCross && nextTileIsWhite){
+			isFinished = true;
+			ClearScreen();
+			TextOut(0, 32, "Finished Crossing");
+			return;
+		}
+	}
+}
+
+/*
+ * Cross Squares - This subroutine moves the robot forward until it reaches the next black square, then
+ * 				   searches for the edges of the black square, straightens up and moves forward to the
+ * 				   next black square
+ *
+ * Parameters:
+ * 		numberToCross -
+ * 		divisor - Determines the size of the degree adjustment we should make.
+ */
+sub part_4(){
+	ClearScreen();
+	TextOut(0, 32, "Part 4");
+
+	// Rotate slightly to face the black square.
+	RotateMotor(RIGHT_MOTOR, 50, 20);
+	Off(OUT_BC);
+
+	// Move forward until it reaches the black square
+	TextOut(0, 32, "Diagonal!");
+	RotateMotor(OUT_BC, 50, 400);
+	until (Sensor(IN_1) <= average){
+		OnFwdSync(OUT_BC, 50, 0);
+	}
+	Off(OUT_BC);
+
+	// Move forward a little more.
+	TextOut(0, 32, "Forward!!");
+	RotateMotor(OUT_BC, 50, 50);
+
+	// Turn around so robot is on the tile.
+	RotateMotor(RIGHT_MOTOR, 50, 320);
+
+	// Move forward slightly so the robot is perfectly positioned.
+	RotateMotor(OUT_BC, 50, 160);
+
+	// Play tone at finish
+	PlayTone(1000, 500);
+	return;
+}
+
+/*
+ * Part 3 Align - This subroutine turns the robot 90 degrees to the right
+ * 				- to point it towards the black tile across the first grey tile.
+ *
+ */
+sub part_3_align(){
+	ClearScreen();
+	TextOut(0, 32, "Part 3 Align");
+
+	// Move forward into the black tile
+	OnFwdSync(OUT_BC, 50, 0);
+	Off(OUT_BC);
+
+	ClearScreen();
+	TextOut(0, 32, "Moving Forwards");
+	RotateMotorEx(OUT_BC, 50, 50, 0, true, true);
+	Off(OUT_BC);
+
+	// turn 90 degrees to the right
+	ClearScreen();
+	TextOut(0, 32, "Turning right");
+	RotateMotor(LEFT_MOTOR, 40, 360);
+	Off(OUT_BC);
+
+	// Reverse robot slightly so distances match up.
+	ClearScreen();
+	TextOut(0, 32, "Reversing");
+	Wait(1000);
+	RotateMotorEx(OUT_BC, 25, -230, 0, true, true);
+	Off(OUT_BC);
+
+	return;
+}
+
+/*
+ * Cross Squares - This subroutine moves the robot forward until it reaches the next black square, then
+ * 				   searches for the edges of the black square, straightens up and moves forward to the
+ * 				   next black square
+ *
+ * Parameters:
+ * 		numberToCross -
+ * 		divisor - Determines the size of the degree adjustment we should make.
+ */
+sub part_3(){
+	ClearScreen();
+	TextOut(0, 32, "Part 3");
+
+	part_3_align();
+
+	// Move across the large grey tile
+	ClearScreen();
+	TextOut(0, 32, "Onwards!");
+	cross_squares(6, 12);
+	Off(OUT_BC);
+ 	return;
+}
+
+/*
+ * Part 2 - The robot crosses 14 black tiles before moving on to part 3.
+ *
+ */
+sub part_2(){
+	cross_squares(13, 5);
+	return;
+}
+
+/*
+ * Part 1 - This subroutine moves the robot forward from the starting black tile
+ * 			It then turns it 90 degrees to the left to point towards the next black tile.
+ */
+sub part_1(){
+	bool startingPart1 = true;
+	ClearScreen();
+	TextOut(0, 32, "Part 1");
+	RotateMotorEx(OUT_BC, 75, 475, 0, true, true);
+	Off(OUT_BC);
+
+	RotateMotor(RIGHT_MOTOR, 40, 360);
+
+	nextTileIsBlack = false;
+	nextTileIsWhite = true;
+	startingPart1 = false;
+	return;
+}
+
+/*
+ * Calibrate Sensors - This task calibrates the colour values for black and white.
+ * 					   First press Sensor 3 to calibrate black.
+ *				 	   Then press Sensor 2 to calibrate white.
+ * 					   Then it will move on to part 1.
+ */
+task calibrate_sensors(){
+	int hasBeenCalibrated = 0;
+	while (hasBeenCalibrated < 2){
+		if (Sensor(IN_3) && hasBeenCalibrated == 0){
+			black = Sensor(IN_1);
+			hasBeenCalibrated = 1;
+			ClearScreen();
+			TextOut(0, 32, "B " + NumToStr(black));
+		}
+		if (Sensor(IN_2) && hasBeenCalibrated == 1){
+			white = Sensor(IN_1);
+			hasBeenCalibrated = 2;
+			ClearScreen();
+			TextOut(0, 32, "W " + NumToStr(white));
+			Wait(2000);
+		}
+		if (hasBeenCalibrated == 2){
+			average = (black + white) / 2;
+			ClearScreen();
+			TextOut(0, 32, "A " + NumToStr(average));
+		}
+	}
+}
+
+/*
+ * Main task - This sets up the sensors and then moves on to part 1.
+ */
+task main(){
+	SetSensorLight(IN_1);
+	SetSensorTouch(IN_2);
+	SetSensorTouch(IN_3);
+	nextTileIsBlack = false;
+	nextTileIsWhite = false;
+	//Precedes(calibrate_sensors);
+	black = 35;
+	white = 54;
+	average = 50;
+	part_1();
+	part_2();
+	part_3();
+	part_4();
+}
+
+
+
+

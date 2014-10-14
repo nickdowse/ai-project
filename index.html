@@ -118,6 +118,82 @@ Off(OUT_BC);
   return degreeRight;
 }
 </code></pre>
+
+<h4>
+<a name="crossing-the-squares" class="anchor" href="#crossing-the-squares"><span class="octicon octicon-link"></span></a>Crossing the squares</h4>
+
+<p>The final functional (rather than organisational) part of our code was a monstrosity that used a lot of variables for state, in order to keep a track of which colour the robot was currently on, and which colour tile was coming up.</p>
+
+<pre><code>sub cross_squares(int numberToCross, int divisor){
+  ClearScreen();
+  TextOut(0, 32, "Crossing Squares");
+
+  bool isFinished = false;
+  int squaresCrossed = 0;
+
+  nextTileIsBlack = false;
+  nextTileIsWhite = true;
+  isOnBlack = true;
+
+  OnFwdSync(OUT_BC, 75, 0);
+  while (!isFinished){
+
+    // If the robot is just reaching a white tile, play tone and set isBlack to false
+    if (Sensor(IN_1) &gt; average &amp;&amp; nextTileIsWhite){
+      nextTileIsBlack = true;
+      nextTileIsWhite = false;
+      isOnBlack = false;
+      ClearScreen();
+      TextOut(0, 32, "Crossed: " + NumToStr(squaresCrossed));
+    }
+
+      // If hitting new black square stop, search and readjust, then increment the number of squares crossed.
+    if ((squaresCrossed &lt; numberToCross) &amp;&amp; (Sensor(IN_1) &lt; average) &amp;&amp; nextTileIsBlack){
+      ClearScreen();
+      TextOut(0, 32, "Rotate + Search!");
+      RotateMotorEx(OUT_BC, 75, 50, 0, true, true);
+      search(divisor);
+      squaresCrossed++;
+    }
+
+      // if on black square play tone
+    if ((squaresCrossed &lt; numberToCross) &amp;&amp; Sensor(IN_1) &lt; average){
+      ClearScreen();
+      TextOut(0, 32, "On Black");
+      // If travelling the small squares move forward until next black square is reached.
+      if (divisor == 5){
+        ClearScreen();
+        TextOut(0, 32, "On small black");
+        OnFwdSync(OUT_BC, 75, 0);
+        PlayTone(100, 52);
+        nextTileIsWhite = true;
+      } else {
+        // If travelling big squares move forward 800 motor rotations
+        // This avoids the problem of picking up the small black flecks in the grey squares
+        Off(OUT_BC);
+        ClearScreen();
+        TextOut(0, 32, "On big black");
+        RotateMotorEx(OUT_BC, 75, 790, 0, true, true);
+        Off(OUT_BC);
+        nextTileIsWhite = false;
+        nextTileIsBlack = true;
+      }
+    }
+
+    // Counting the squares crossed
+    ClearScreen();
+    TextOut(0, 32, "S " + NumToStr(squaresCrossed) + " N " + NumToStr(numberToCross));
+
+    // If the robot has crossed the number of squares print "Finished Crossing" and return.
+    if (squaresCrossed == numberToCross &amp;&amp; nextTileIsWhite){
+      isFinished = true;
+      ClearScreen();
+      TextOut(0, 32, "Finished Crossing");
+      return;
+    }
+  }
+}
+</code></pre>
       </section>
       <footer>
         <p>This project is maintained by <a href="https://github.com/nickdowse">nickdowse</a></p>

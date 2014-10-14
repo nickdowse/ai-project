@@ -18,10 +18,13 @@
         <h1>Ai-project</h1>
         <p>This is the offical page for the COSC343 first AI project for Nick Dowse and Andrew Ashton. </p>
 
+        <p class="view"><a href="https://github.com/nickdowse/ai-project">View the Project on GitHub <small>nickdowse/ai-project</small></a></p>
+
+
         <ul>
+          <li><a href="https://github.com/nickdowse/ai-project/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/nickdowse/ai-project/tarball/master">Download <strong>TAR Ball</strong></a></li>
           <li><a href="https://github.com/nickdowse/ai-project">View On <strong>GitHub</strong></a></li>
-          <li><a href="https://www.twitter.com/nmdowse">Find me on <strong>Twitter</strong></a></li>
-          <li><a href="http://www.cs.otago.ac.nz/cosc343/Assignments/cosc343assig1.pdf">Assignment <strong>Spec</strong></a></li>
         </ul>
       </header>
       <section>
@@ -46,160 +49,160 @@
 
 <p>We used the light sensor to determine whether the robot was on a black or white tile, and we manually calibrated the sensor before the robot began its run. The first part of calibrating the light sensors was to recognise the correct colour value for black and the correct colour value for white. The code below runs in a loop until both left and right buttons (<code>Sensor(IN_3)</code> and <code>Sensor(IN_2)</code>) have been clicked. When one is clicked the light value is detected from the third sensor (<code>Sensor(IN_1)</code>) and stored in the black and white variables respectively. Once the light values have been calibrated the screen prints out the average value, and we are ready to start.</p>
 
-<pre><code>task calibrate_sensors(){
-  int hasBeenCalibrated = 0;
-  while (hasBeenCalibrated &lt; 2){
-    if (Sensor(IN_3) &amp;&amp; hasBeenCalibrated == 0){
-      black = Sensor(IN_1);
-      hasBeenCalibrated = 1;
-      ClearScreen();
-      TextOut(0, 32, "B " + NumToStr(black));
-    }
-    if (Sensor(IN_2) &amp;&amp; hasBeenCalibrated == 1){
-      white = Sensor(IN_1);
-      hasBeenCalibrated = 2;
-      ClearScreen();
-      TextOut(0, 32, "W " + NumToStr(white));
-      Wait(2000);
-    }
-    if (hasBeenCalibrated == 2){
-      average = (black + white) / 2;
-      ClearScreen();
-      TextOut(0, 32, "A " + NumToStr(average));
-    }
-  }
-}
-</code></pre>
+<div class="highlight highlight-c"><pre><span class="n">task</span> <span class="nf">calibrate_sensors</span><span class="p">(){</span>
+  <span class="kt">int</span> <span class="n">hasBeenCalibrated</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="k">while</span> <span class="p">(</span><span class="n">hasBeenCalibrated</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">){</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">Sensor</span><span class="p">(</span><span class="n">IN_3</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="n">hasBeenCalibrated</span> <span class="o">==</span> <span class="mi">0</span><span class="p">){</span>
+      <span class="n">black</span> <span class="o">=</span> <span class="n">Sensor</span><span class="p">(</span><span class="n">IN_1</span><span class="p">);</span>
+      <span class="n">hasBeenCalibrated</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+      <span class="n">ClearScreen</span><span class="p">();</span>
+      <span class="n">TextOut</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="s">"B "</span> <span class="o">+</span> <span class="n">NumToStr</span><span class="p">(</span><span class="n">black</span><span class="p">));</span>
+    <span class="p">}</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">Sensor</span><span class="p">(</span><span class="n">IN_2</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="n">hasBeenCalibrated</span> <span class="o">==</span> <span class="mi">1</span><span class="p">){</span>
+      <span class="n">white</span> <span class="o">=</span> <span class="n">Sensor</span><span class="p">(</span><span class="n">IN_1</span><span class="p">);</span>
+      <span class="n">hasBeenCalibrated</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span>
+      <span class="n">ClearScreen</span><span class="p">();</span>
+      <span class="n">TextOut</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="s">"W "</span> <span class="o">+</span> <span class="n">NumToStr</span><span class="p">(</span><span class="n">white</span><span class="p">));</span>
+      <span class="n">Wait</span><span class="p">(</span><span class="mi">2000</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">hasBeenCalibrated</span> <span class="o">==</span> <span class="mi">2</span><span class="p">){</span>
+      <span class="n">average</span> <span class="o">=</span> <span class="p">(</span><span class="n">black</span> <span class="o">+</span> <span class="n">white</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">;</span>
+      <span class="n">ClearScreen</span><span class="p">();</span>
+      <span class="n">TextOut</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="s">"A "</span> <span class="o">+</span> <span class="n">NumToStr</span><span class="p">(</span><span class="n">average</span><span class="p">));</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
 
 <h4>
 <a name="moving-forward" class="anchor" href="#moving-forward"><span class="octicon octicon-link"></span></a>Moving Forward:</h4>
 
 <p>Plain and simple NXC code to move the robot forward.</p>
 
-<pre><code>ClearScreen();
-TextOut(0, 32, "Moving forward.");
-RotateMotorEx(OUT_BC, 75, 475, 0, true, true);
-Off(OUT_BC);
-</code></pre>
+<div class="highlight highlight-c"><pre><span class="n">ClearScreen</span><span class="p">();</span>
+<span class="n">TextOut</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="s">"Moving forward."</span><span class="p">);</span>
+<span class="n">RotateMotorEx</span><span class="p">(</span><span class="n">OUT_BC</span><span class="p">,</span> <span class="mi">75</span><span class="p">,</span> <span class="mi">475</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="nb">true</span><span class="p">,</span> <span class="nb">true</span><span class="p">);</span>
+<span class="n">Off</span><span class="p">(</span><span class="n">OUT_BC</span><span class="p">);</span>
+</pre></div>
 
 <h4>
 <a name="realigning-on-a-black-tile" class="anchor" href="#realigning-on-a-black-tile"><span class="octicon octicon-link"></span></a>Realigning on a black tile</h4>
 
 <p>This code was used heavily when crossing 14 black tiles. Between every black tile was a white tile, so whenever the robot crossed a white tile and reached a black tile we would use this code to realign the robot to face in the direction of the next black tile.</p>
 
-<pre><code>sub search(int divisor){
-  Off(OUT_BC);
-  long degreeRight = move_right();
-  long degreeLeft = move_left();
-  RotateMotor(RIGHT_MOTOR, -40, degreeLeft + ((degreeRight - degreeLeft)/divisor));
-  nextTileIsBlack = false;
-  nextTileIsWhite = true;
-  isOnBlack = true;
-}
-</code></pre>
+<div class="highlight highlight-c"><pre><span class="n">sub</span> <span class="nf">search</span><span class="p">(</span><span class="kt">int</span> <span class="n">divisor</span><span class="p">){</span>
+  <span class="n">Off</span><span class="p">(</span><span class="n">OUT_BC</span><span class="p">);</span>
+  <span class="kt">long</span> <span class="n">degreeRight</span> <span class="o">=</span> <span class="n">move_right</span><span class="p">();</span>
+  <span class="kt">long</span> <span class="n">degreeLeft</span> <span class="o">=</span> <span class="n">move_left</span><span class="p">();</span>
+  <span class="n">RotateMotor</span><span class="p">(</span><span class="n">RIGHT_MOTOR</span><span class="p">,</span> <span class="o">-</span><span class="mi">40</span><span class="p">,</span> <span class="n">degreeLeft</span> <span class="o">+</span> <span class="p">((</span><span class="n">degreeRight</span> <span class="o">-</span> <span class="n">degreeLeft</span><span class="p">)</span><span class="o">/</span><span class="n">divisor</span><span class="p">));</span>
+  <span class="n">nextTileIsBlack</span> <span class="o">=</span> <span class="nb">false</span><span class="p">;</span>
+  <span class="n">nextTileIsWhite</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
+  <span class="n">isOnBlack</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
 
 <p>The robot would start by moving forward onto the black square, and then look right until it found white. It records the number degrees it turns based on how far the wheels spin, before turning back to the left until it hits white. If the difference was small, we would barely adjust the robots bearings. If the difference was large we would adjust its direction by a larger amount.</p>
 
-<pre><code>long move_right(){
-  long degreeRight = MotorRotationCount(LEFT_MOTOR);
-  until (Sensor(IN_1) &gt;= (white - 10)){ // until it hits white turn right
-    OnFwd(LEFT_MOTOR, 40);
-  }
-  Off(OUT_BC);
-  degreeRight = MotorRotationCount(LEFT_MOTOR) - degreeRight;
+<div class="highlight highlight-c"><pre><span class="kt">long</span> <span class="nf">move_right</span><span class="p">(){</span>
+  <span class="kt">long</span> <span class="n">degreeRight</span> <span class="o">=</span> <span class="n">MotorRotationCount</span><span class="p">(</span><span class="n">LEFT_MOTOR</span><span class="p">);</span>
+  <span class="n">until</span> <span class="p">(</span><span class="n">Sensor</span><span class="p">(</span><span class="n">IN_1</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="p">(</span><span class="n">white</span> <span class="o">-</span> <span class="mi">10</span><span class="p">)){</span> <span class="c1">// until it hits white turn right</span>
+    <span class="n">OnFwd</span><span class="p">(</span><span class="n">LEFT_MOTOR</span><span class="p">,</span> <span class="mi">40</span><span class="p">);</span>
+  <span class="p">}</span>
+  <span class="n">Off</span><span class="p">(</span><span class="n">OUT_BC</span><span class="p">);</span>
+  <span class="n">degreeRight</span> <span class="o">=</span> <span class="n">MotorRotationCount</span><span class="p">(</span><span class="n">LEFT_MOTOR</span><span class="p">)</span> <span class="o">-</span> <span class="n">degreeRight</span><span class="p">;</span>
 
-  if (degreeRight &lt; 60 ){ // Correction if degrees turned is small.
-    degreeRight+= 25;
-  } else if (degreeRight &lt; 120){
-    degreeRight+= 10;
-  }
-  RotateMotor(LEFT_MOTOR, -40, degreeRight);
-  return degreeRight;
-}
-</code></pre>
+  <span class="k">if</span> <span class="p">(</span><span class="n">degreeRight</span> <span class="o">&lt;</span> <span class="mi">60</span> <span class="p">){</span> <span class="c1">// Correction if degrees turned is small.</span>
+    <span class="n">degreeRight</span><span class="o">+=</span> <span class="mi">25</span><span class="p">;</span>
+  <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">degreeRight</span> <span class="o">&lt;</span> <span class="mi">120</span><span class="p">){</span>
+    <span class="n">degreeRight</span><span class="o">+=</span> <span class="mi">10</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="n">RotateMotor</span><span class="p">(</span><span class="n">LEFT_MOTOR</span><span class="p">,</span> <span class="o">-</span><span class="mi">40</span><span class="p">,</span> <span class="n">degreeRight</span><span class="p">);</span>
+  <span class="k">return</span> <span class="n">degreeRight</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
 
 <h4>
 <a name="crossing-the-squares" class="anchor" href="#crossing-the-squares"><span class="octicon octicon-link"></span></a>Crossing the squares</h4>
 
 <p>This was the core of our code, and the final function that I'll talk about here. It is a monstrosity that used a lot of variables for state, in order to keep a track of which colour the robot was currently on, and which colour tile was coming up. The divisor was the a factor of the distance between the squares the robot had to cross. The higher it is the lower the correction of the robot when searching and realigning. This was done to prevent overcorrection.</p>
 
-<pre><code>sub cross_squares(int numberToCross, int divisor){
-  ClearScreen();
-  TextOut(0, 32, "Crossing Squares");
+<div class="highlight highlight-c"><pre><span class="n">sub</span> <span class="nf">cross_squares</span><span class="p">(</span><span class="kt">int</span> <span class="n">numberToCross</span><span class="p">,</span> <span class="kt">int</span> <span class="n">divisor</span><span class="p">){</span>
+  <span class="n">ClearScreen</span><span class="p">();</span>
+  <span class="n">TextOut</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="s">"Crossing Squares"</span><span class="p">);</span>
 
-  bool isFinished = false;
-  int squaresCrossed = 0;
+  <span class="kt">bool</span> <span class="n">isFinished</span> <span class="o">=</span> <span class="nb">false</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">squaresCrossed</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
 
-  nextTileIsBlack = false;
-  nextTileIsWhite = true;
-  isOnBlack = true;
+  <span class="n">nextTileIsBlack</span> <span class="o">=</span> <span class="nb">false</span><span class="p">;</span>
+  <span class="n">nextTileIsWhite</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
+  <span class="n">isOnBlack</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
 
-  OnFwdSync(OUT_BC, 75, 0);
-  while (!isFinished){
+  <span class="n">OnFwdSync</span><span class="p">(</span><span class="n">OUT_BC</span><span class="p">,</span> <span class="mi">75</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+  <span class="k">while</span> <span class="p">(</span><span class="o">!</span><span class="n">isFinished</span><span class="p">){</span>
 
-    // If the robot is just reaching a white tile, play tone and set isBlack to false
-    if (Sensor(IN_1) &gt; average &amp;&amp; nextTileIsWhite){
-      nextTileIsBlack = true;
-      nextTileIsWhite = false;
-      isOnBlack = false;
-      ClearScreen();
-      TextOut(0, 32, "Crossed: " + NumToStr(squaresCrossed));
-    }
+    <span class="c1">// If the robot is just reaching a white tile, play tone and set isBlack to false</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">Sensor</span><span class="p">(</span><span class="n">IN_1</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">average</span> <span class="o">&amp;&amp;</span> <span class="n">nextTileIsWhite</span><span class="p">){</span>
+      <span class="n">nextTileIsBlack</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
+      <span class="n">nextTileIsWhite</span> <span class="o">=</span> <span class="nb">false</span><span class="p">;</span>
+      <span class="n">isOnBlack</span> <span class="o">=</span> <span class="nb">false</span><span class="p">;</span>
+      <span class="n">ClearScreen</span><span class="p">();</span>
+      <span class="n">TextOut</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="s">"Crossed: "</span> <span class="o">+</span> <span class="n">NumToStr</span><span class="p">(</span><span class="n">squaresCrossed</span><span class="p">));</span>
+    <span class="p">}</span>
 
-      // If hitting new black square stop, search and readjust, then increment the number of squares crossed.
-    if ((squaresCrossed &lt; numberToCross) &amp;&amp; (Sensor(IN_1) &lt; average) &amp;&amp; nextTileIsBlack){
-      ClearScreen();
-      TextOut(0, 32, "Rotate + Search!");
-      RotateMotorEx(OUT_BC, 75, 50, 0, true, true);
-      search(divisor);
-      squaresCrossed++;
-    }
+      <span class="c1">// If hitting new black square stop, search and readjust, then increment the number of squares crossed.</span>
+    <span class="k">if</span> <span class="p">((</span><span class="n">squaresCrossed</span> <span class="o">&lt;</span> <span class="n">numberToCross</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="n">Sensor</span><span class="p">(</span><span class="n">IN_1</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">average</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="n">nextTileIsBlack</span><span class="p">){</span>
+      <span class="n">ClearScreen</span><span class="p">();</span>
+      <span class="n">TextOut</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="s">"Rotate + Search!"</span><span class="p">);</span>
+      <span class="n">RotateMotorEx</span><span class="p">(</span><span class="n">OUT_BC</span><span class="p">,</span> <span class="mi">75</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="nb">true</span><span class="p">,</span> <span class="nb">true</span><span class="p">);</span>
+      <span class="n">search</span><span class="p">(</span><span class="n">divisor</span><span class="p">);</span>
+      <span class="n">squaresCrossed</span><span class="o">++</span><span class="p">;</span>
+    <span class="p">}</span>
 
-      // if on black square play tone
-    if ((squaresCrossed &lt; numberToCross) &amp;&amp; Sensor(IN_1) &lt; average){
-      ClearScreen();
-      TextOut(0, 32, "On Black");
-      // If travelling the small squares move forward until next black square is reached.
-      if (divisor == 5){
-        ClearScreen();
-        TextOut(0, 32, "On small black");
-        OnFwdSync(OUT_BC, 75, 0);
-        PlayTone(100, 52);
-        nextTileIsWhite = true;
-      } else {
-        // If travelling big squares move forward 800 motor rotations
-        // This avoids the problem of picking up the small black flecks in the grey squares
-        Off(OUT_BC);
-        ClearScreen();
-        TextOut(0, 32, "On big black");
-        RotateMotorEx(OUT_BC, 75, 790, 0, true, true);
-        Off(OUT_BC);
-        nextTileIsWhite = false;
-        nextTileIsBlack = true;
-      }
-    }
+      <span class="c1">// if on black square play tone</span>
+    <span class="k">if</span> <span class="p">((</span><span class="n">squaresCrossed</span> <span class="o">&lt;</span> <span class="n">numberToCross</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="n">Sensor</span><span class="p">(</span><span class="n">IN_1</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">average</span><span class="p">){</span>
+      <span class="n">ClearScreen</span><span class="p">();</span>
+      <span class="n">TextOut</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="s">"On Black"</span><span class="p">);</span>
+      <span class="c1">// If travelling the small squares move forward until next black square is reached.</span>
+      <span class="k">if</span> <span class="p">(</span><span class="n">divisor</span> <span class="o">==</span> <span class="mi">5</span><span class="p">){</span>
+        <span class="n">ClearScreen</span><span class="p">();</span>
+        <span class="n">TextOut</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="s">"On small black"</span><span class="p">);</span>
+        <span class="n">OnFwdSync</span><span class="p">(</span><span class="n">OUT_BC</span><span class="p">,</span> <span class="mi">75</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+        <span class="n">PlayTone</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">52</span><span class="p">);</span>
+        <span class="n">nextTileIsWhite</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
+      <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+        <span class="c1">// If travelling big squares move forward 800 motor rotations</span>
+        <span class="c1">// This avoids the problem of picking up the small black flecks in the grey squares</span>
+        <span class="n">Off</span><span class="p">(</span><span class="n">OUT_BC</span><span class="p">);</span>
+        <span class="n">ClearScreen</span><span class="p">();</span>
+        <span class="n">TextOut</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="s">"On big black"</span><span class="p">);</span>
+        <span class="n">RotateMotorEx</span><span class="p">(</span><span class="n">OUT_BC</span><span class="p">,</span> <span class="mi">75</span><span class="p">,</span> <span class="mi">790</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="nb">true</span><span class="p">,</span> <span class="nb">true</span><span class="p">);</span>
+        <span class="n">Off</span><span class="p">(</span><span class="n">OUT_BC</span><span class="p">);</span>
+        <span class="n">nextTileIsWhite</span> <span class="o">=</span> <span class="nb">false</span><span class="p">;</span>
+        <span class="n">nextTileIsBlack</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
 
-    // Counting the squares crossed
-    ClearScreen();
-    TextOut(0, 32, "S " + NumToStr(squaresCrossed) + " N " + NumToStr(numberToCross));
+    <span class="c1">// Counting the squares crossed</span>
+    <span class="n">ClearScreen</span><span class="p">();</span>
+    <span class="n">TextOut</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="s">"S "</span> <span class="o">+</span> <span class="n">NumToStr</span><span class="p">(</span><span class="n">squaresCrossed</span><span class="p">)</span> <span class="o">+</span> <span class="s">" N "</span> <span class="o">+</span> <span class="n">NumToStr</span><span class="p">(</span><span class="n">numberToCross</span><span class="p">));</span>
 
-    // If the robot has crossed the number of squares print "Finished Crossing" and return.
-    if (squaresCrossed == numberToCross &amp;&amp; nextTileIsWhite){
-      isFinished = true;
-      ClearScreen();
-      TextOut(0, 32, "Finished Crossing");
-      return;
-    }
-  }
-}
-</code></pre>
+    <span class="c1">// If the robot has crossed the number of squares print "Finished Crossing" and return.</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">squaresCrossed</span> <span class="o">==</span> <span class="n">numberToCross</span> <span class="o">&amp;&amp;</span> <span class="n">nextTileIsWhite</span><span class="p">){</span>
+      <span class="n">isFinished</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
+      <span class="n">ClearScreen</span><span class="p">();</span>
+      <span class="n">TextOut</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="s">"Finished Crossing"</span><span class="p">);</span>
+      <span class="k">return</span><span class="p">;</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
 
 <h3>
 <a name="part-3-the-results" class="anchor" href="#part-3-the-results"><span class="octicon octicon-link"></span></a>Part 3: The Results</h3>
 
 <p>On the day we had been testing the robot and things were going well. However, disaster struck on the first marked attempt as the light had shifted and the robot got confused between the black and white calibration. It almost immediately veered off course. </p>
 
-<p>We tried again, watching on with bated breath as our robot navigated one section of the course after another, before ending up perfectly centred on the black finishing square. All in all, a great experience, and we only ended up losing marks on the code.</p>
+<p>We tried again, watching on with bated breath as our robot navigated one section of the course after another, before ending up perfectly centred on the black finishing square. All in all, a great experience, and we only ended up losing marks because we had too many comments in the code. C'est la vie.</p>
 
 <p>Here's our robot (and Andrew) in action!</p>
 
@@ -211,6 +214,6 @@ Off(OUT_BC);
       </footer>
     </div>
     <script src="javascripts/scale.fix.js"></script>
-
+    
   </body>
 </html>

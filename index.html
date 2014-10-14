@@ -15,21 +15,23 @@
   <body>
     <div class="wrapper">
       <header>
-        <h1>COSC343 Assignment 1 - Robots</h1>
+        <h1>Ai-project</h1>
         <p>NXC Code for my recent robotics assignment.</p>
 
-        <ul>
-          <li><a href="https://github.com/nickdowse/ai-project">View On <strong>GitHub</strong></a></li>
-          <li><a href="https://www.twitter.com/nmdowse">Find me on <strong>Twitter</strong></a></li>
-          <li><a href="http://www.cs.otago.ac.nz/cosc343/Assignments/cosc343assig1.pdf">Assignment <strong>Spec</strong></a></li>
+        <p class="view"><a href="https://github.com/nickdowse/ai-project">View the Project on GitHub <small>nickdowse/ai-project</small></a></p>
 
+
+        <ul>
+          <li><a href="https://github.com/nickdowse/ai-project/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/nickdowse/ai-project/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/nickdowse/ai-project">View On <strong>GitHub</strong></a></li>
         </ul>
       </header>
       <section>
         <h3>
 <a name="1-the-challenge" class="anchor" href="#1-the-challenge"><span class="octicon octicon-link"></span></a>1. The Challenge</h3>
 
-<p>This is the offical page for the COSC343 first AI project for Nick Dowse and Andrew Ashton. The task was to program lego mindstorm robots in NXC to complete a course as shown below. First the robot had to start, turn 90 degrees, then travel forward over to a black tile, then turn and travel over 14 black tiles, interspersed with white tiles. It then had to turn again and travel over a distance of 7 large grey tiles, before stopping on the finish line.</p>
+<p>This is the offical page for the COSC343 first AI project for Nick Dowse and Andrew Ashton. The first part of the assignment was to program lego mindstorm robots in NXC to complete a course as shown below. The robot had to start, turn 90 degrees, travel forward over to a black tile, then turn and travel over 14 black tiles interspersed with white tiles. It then had to turn again and travel over a distance of 7 large grey tiles, before stopping on the finish line.</p>
 
 <p><img src="https://photos-4.dropbox.com/t/1/AACQ2nmcEmcS4PBXVxaxqdMoNz0qOJEMSzCr6S7tbRrgow/12/8148845/png/1024x768/3/1413324000/0/2/Screenshot%202014-10-14%2021.42.27.png/xsJee45eprOsqgFlrd25ZvQ4vIwU4afbW_Eds9OU7nU" alt="Assignment Task"></p>
 
@@ -38,12 +40,14 @@
 <h3>
 <a name="2-the-code" class="anchor" href="#2-the-code"><span class="octicon octicon-link"></span></a>2. The Code</h3>
 
-<p>The code was broken up into five main parts. These five parts direct the robot around the course. Apart from the preliminary stage to calibrate the sensors each part simply utilises four methods of our methods and some basic movement methods in the NXC language, to move around the course. The major challenge was keeping the robot going in a straight line, and moving in the right direction. The motors powering the wheels had various amounts of power each depending on the battery level, and so you couldn't rely on telling the robot to simply move in a straight line to make the robot move in a straight line.</p>
+<p>The code was broken up into five main parts. These five parts direct the robot around the course. Apart from the preliminary stage to calibrate the light sensors each part simply utilises four methods that we wrote, and some basic movement methods in the NXC language in order to move around the course. I'll cover the calibration, moving forward, and the four major functions we wrote to control the robot here.</p>
+
+<p>The major challenge we encountered was keeping the robot going in a straight line and moving in the right direction. The motors powering the wheels had various amounts of power each depending on the battery level, and so you couldn't rely on the robot moving in a straight line when it was directed to.</p>
 
 <h4>
-<a name="calibrating-sensors" class="anchor" href="#calibrating-sensors"><span class="octicon octicon-link"></span></a>Calibrating Sensors:</h4>
+<a name="calibrating-the-light-sensor" class="anchor" href="#calibrating-the-light-sensor"><span class="octicon octicon-link"></span></a>Calibrating the light Sensor:</h4>
 
-<p>The first part calibrates the light sensor to recognise the correct colour value for black and the correct colour value for white. The code below loops through until both left and right buttons (<code>Sensor(IN_3)</code> and <code>Sensor(IN_2)</code>) have been clicked, capturing the light value at the time they were clicked as black and white respectively. Once the light values have been calibrated the screen prints out the average value, and we are ready to start.</p>
+<p>We used the light sensor to determine whether the robot was on a black or white tile, and we manually calibrated the sensor before the robot began its run. The first part of calibrating the light sensors was to recognise the correct colour value for black and the correct colour value for white. The code below runs in a loop until both left and right buttons (<code>Sensor(IN_3)</code> and <code>Sensor(IN_2)</code>) have been clicked. When one is clicked the light value is detected from the third sensor (<code>Sensor(IN_1)</code>) and stored in the black and white variables respectively. Once the light values have been calibrated the screen prints out the average value, and we are ready to start.</p>
 
 <pre><code>task calibrate_sensors(){
   int hasBeenCalibrated = 0;
@@ -73,7 +77,7 @@
 <h4>
 <a name="moving-forward" class="anchor" href="#moving-forward"><span class="octicon octicon-link"></span></a>Moving Forward:</h4>
 
-<p>Plain simple NXC code to move the robot forward.</p>
+<p>Plain and simple NXC code to move the robot forward.</p>
 
 <pre><code>ClearScreen();
 TextOut(0, 32, "Moving forward.");
@@ -84,7 +88,7 @@ Off(OUT_BC);
 <h4>
 <a name="realigning-on-a-black-tile" class="anchor" href="#realigning-on-a-black-tile"><span class="octicon octicon-link"></span></a>Realigning on a black tile</h4>
 
-<p>Between every black tile was a white tile, so whenever the robot crossed a white tile and reached a black tile we would realign the robot to make sure it was facing in the right direction to continue along a straight line.</p>
+<p>This code was used heavily when crossing 14 black tiles. Between every black tile was a white tile, so whenever the robot crossed a white tile and reached a black tile we would use this code to realign the robot to face in the direction of the next black tile.</p>
 
 <pre><code>sub search(int divisor){
   Off(OUT_BC);
@@ -97,7 +101,7 @@ Off(OUT_BC);
 }
 </code></pre>
 
-<p>The robot would first move forward onto the black square, and then look right until it found white. It records the degrees it turns, before turning back to the left until it hits white. If the difference was small, we would barely adjust the robots bearings. If the difference was large we would adjust its direction by a larger amount.</p>
+<p>The robot would start by moving forward onto the black square, and then look right until it found white. It records the number degrees it turns based on how far the wheels spin, before turning back to the left until it hits white. If the difference was small, we would barely adjust the robots bearings. If the difference was large we would adjust its direction by a larger amount.</p>
 
 <pre><code>long move_right(){
   long degreeRight = MotorRotationCount(LEFT_MOTOR);
@@ -120,7 +124,7 @@ Off(OUT_BC);
 <h4>
 <a name="crossing-the-squares" class="anchor" href="#crossing-the-squares"><span class="octicon octicon-link"></span></a>Crossing the squares</h4>
 
-<p>The final functional (rather than organisational) part of our code was a monstrosity that used a lot of variables for state, in order to keep a track of which colour the robot was currently on, and which colour tile was coming up.</p>
+<p>This was the core of our code, and the final function that I'll talk about here. It is a monstrosity that used a lot of variables for state, in order to keep a track of which colour the robot was currently on, and which colour tile was coming up. The divisor was the a factor of the distance between the squares the robot had to cross. The higher it is the lower the correction of the robot when searching and realigning. This was done to prevent overcorrection.</p>
 
 <pre><code>sub cross_squares(int numberToCross, int divisor){
   ClearScreen();
@@ -210,6 +214,6 @@ Off(OUT_BC);
       </footer>
     </div>
     <script src="javascripts/scale.fix.js"></script>
-
+    
   </body>
 </html>

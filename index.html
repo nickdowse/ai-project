@@ -1,46 +1,54 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
+
   <head>
-    <meta charset="utf-8">
+    <meta charset='utf-8'>
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <title>Ai-project by nickdowse</title>
+    <meta name="description" content="Ai-project : NXC Code for my recent robotics assignment.">
 
-    <link rel="stylesheet" href="stylesheets/styles.css">
-    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-    <!--[if lt IE 9]>
-    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>Ai-project</title>
   </head>
+
   <body>
-    <div class="wrapper">
-      <header>
-        <h1>Ai-project</h1>
-        <p>NXC Code for my recent robotics assignment.</p>
 
-        <p class="view"><a href="https://github.com/nickdowse/ai-project">View the Project on GitHub <small>nickdowse/ai-project</small></a></p>
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/nickdowse/ai-project">View on GitHub</a>
 
+          <h1 id="project_title">Ai-project</h1>
+          <h2 id="project_tagline">NXC Code for my recent robotics assignment.</h2>
 
-        <ul>
-          <li><a href="https://github.com/nickdowse/ai-project/zipball/master">Download <strong>ZIP File</strong></a></li>
-          <li><a href="https://github.com/nickdowse/ai-project/tarball/master">Download <strong>TAR Ball</strong></a></li>
-          <li><a href="https://github.com/nickdowse/ai-project">View On <strong>GitHub</strong></a></li>
-        </ul>
-      </header>
-      <section>
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/nickdowse/ai-project/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/nickdowse/ai-project/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
         <h3>
 <a name="1-the-challenge" class="anchor" href="#1-the-challenge"><span class="octicon octicon-link"></span></a>1. The Challenge</h3>
 
 <p>This is the offical page for the COSC343 first AI project for Nick Dowse and Andrew Ashton. The task was to program lego mindstorm robots in NXC to complete a course as shown below. First the robot had to start, turn 90 degrees, then travel forward over to a black tile, then turn and travel over 14 black tiles, interspersed with white tiles. It then had to turn again and travel over a distance of 7 large grey tiles, before stopping on the finish line.</p>
 
-<p><img src="https://photos-4.dropbox.com/t/1/AACQ2nmcEmcS4PBXVxaxqdMoNz0qOJEMSzCr6S7tbRrgow/12/8148845/png/1024x768/3/1413324000/0/2/Screenshot%202014-10-14%2021.42.27.png/xsJee45eprOsqgFlrd25ZvQ4vIwU4afbW_Eds9OU7nU" alt="Assignment Task"></p>
+<p><img src="https://www.dropbox.com/s/4spst2dlqcns5lt/Screenshot%202014-10-14%2021.42.27.png?dl=0" alt="Assignment Task"></p>
 
 <p>The second part of the assignment was to write a report about the challenges involved, the processes used, and what you learnt (posted at the bottom of the page).</p>
 
 <h3>
 <a name="2-the-code" class="anchor" href="#2-the-code"><span class="octicon octicon-link"></span></a>2. The Code</h3>
 
-<p>The code was broken up into 5 main parts. The first part calibrates the light sensor to recognise the correct colour value for black and the correct colour value for white. The code below loops through until both left and right buttons (<code>Sensor(IN_3)</code> and <code>Sensor(IN_2)</code>) have been clicked, capturing the light value at the time they were clicked as black and white respectively. Once the light values have been calibrated the screen prints out the average value, and we are ready to start.</p>
+<p>The code was broken up into five main parts. These five parts direct the robot around the course. Apart from the preliminary stage to calibrate the sensors each part simply utilises four methods of our methods and some basic movement methods in the NXC language, to move around the course. The major challenge was keeping the robot going in a straight line, and moving in the right direction. The motors powering the wheels had various amounts of power each depending on the battery level, and so you couldn't rely on telling the robot to simply move in a straight line to make the robot move in a straight line.</p>
+
+<h4>
+<a name="calibrating-sensors" class="anchor" href="#calibrating-sensors"><span class="octicon octicon-link"></span></a>Calibrating Sensors:</h4>
+
+<p>The first part calibrates the light sensor to recognise the correct colour value for black and the correct colour value for white. The code below loops through until both left and right buttons (<code>Sensor(IN_3)</code> and <code>Sensor(IN_2)</code>) have been clicked, capturing the light value at the time they were clicked as black and white respectively. Once the light values have been calibrated the screen prints out the average value, and we are ready to start.</p>
 
 <pre><code>task calibrate_sensors(){
   int hasBeenCalibrated = 0;
@@ -66,13 +74,63 @@
   }
 }
 </code></pre>
+
+<h4>
+<a name="moving-forward" class="anchor" href="#moving-forward"><span class="octicon octicon-link"></span></a>Moving Forward:</h4>
+
+<pre><code>ClearScreen();
+TextOut(0, 32, "Part 1");
+RotateMotorEx(OUT_BC, 75, 475, 0, true, true);
+Off(OUT_BC);
+</code></pre>
+
+<h4>
+<a name="realigning-on-a-black-tile" class="anchor" href="#realigning-on-a-black-tile"><span class="octicon octicon-link"></span></a>Realigning on a black tile</h4>
+
+<p>Between every black tile was a white tile, so whenever the robot crossed a white tile and reached a black tile we would realign the robot to make sure it was facing in the right direction to continue along a straight line.</p>
+
+<pre><code>sub search(int divisor){
+  Off(OUT_BC);
+  long degreeRight = move_right();
+  long degreeLeft = move_left();
+  RotateMotor(RIGHT_MOTOR, -40, degreeLeft + ((degreeRight - degreeLeft)/divisor));
+  nextTileIsBlack = false;
+  nextTileIsWhite = true;
+  isOnBlack = true;
+}
+</code></pre>
+
+<p>The robot would first move forward onto the black square, and then look right until it found white. It records the degrees it turns, before turning back to the left until it hits white. If the difference was small, we would barely adjust the robots bearings. If the difference was large we would adjust its direction by a larger amount.</p>
+
+<pre><code>long move_right(){
+  long degreeRight = MotorRotationCount(LEFT_MOTOR);
+  until (Sensor(IN_1) &gt;= (white - 10)){ // until it hits white turn right
+    OnFwd(LEFT_MOTOR, 40);
+  }
+  Off(OUT_BC);
+  degreeRight = MotorRotationCount(LEFT_MOTOR) - degreeRight;
+
+  if (degreeRight &lt; 60 ){ // Correction if degrees turned is small.
+    degreeRight+= 25;
+  } else if (degreeRight &lt; 120){
+    degreeRight+= 10;
+  }
+  RotateMotor(LEFT_MOTOR, -40, degreeRight);
+  return degreeRight;
+}
+</code></pre>
       </section>
-      <footer>
-        <p>This project is maintained by <a href="https://github.com/nickdowse">nickdowse</a></p>
-        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Ai-project maintained by <a href="https://github.com/nickdowse">nickdowse</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
       </footer>
     </div>
-    <script src="javascripts/scale.fix.js"></script>
+
+    
 
   </body>
 </html>

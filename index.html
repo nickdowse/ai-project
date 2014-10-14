@@ -29,33 +29,43 @@
       </header>
       <section>
         <h3>
-<a name="cosc343-ai-project-1" class="anchor" href="#cosc343-ai-project-1"><span class="octicon octicon-link"></span></a>COSC343 AI Project 1.</h3>
+<a name="1-the-challenge" class="anchor" href="#1-the-challenge"><span class="octicon octicon-link"></span></a>1. The Challenge</h3>
 
-<p>This is the offical page for the COSC343 first AI project for Nick Dowse and Andrew Ashton. The task was to program robots to complete a course as shown below. First the robot had to start, then travel forward over to a black tile, then turn and travel over 14 black tiles, interspersed with white tiles. Then it had to turn again and travel over a distance of 7 large grey tiles, before stopping on the finish line.</p>
+<p>This is the offical page for the COSC343 first AI project for Nick Dowse and Andrew Ashton. The task was to program lego mindstorm robots in NXC to complete a course as shown below. First the robot had to start, turn 90 degrees, then travel forward over to a black tile, then turn and travel over 14 black tiles, interspersed with white tiles. It then had to turn again and travel over a distance of 7 large grey tiles, before stopping on the finish line.</p>
 
 <p><img src="https://www.dropbox.com/s/4spst2dlqcns5lt/Screenshot%202014-10-14%2021.42.27.png?dl=0" alt="Assignment Task"></p>
 
-<p>If you're using the GitHub for Mac, simply sync your repository and you'll see the new branch.</p>
+<p>The second part of the assignment was to write a report about the challenges involved, the processes used, and what you learnt (posted at the bottom of the page).</p>
 
 <h3>
-<a name="designer-templates" class="anchor" href="#designer-templates"><span class="octicon octicon-link"></span></a>Designer Templates</h3>
+<a name="2-the-code" class="anchor" href="#2-the-code"><span class="octicon octicon-link"></span></a>2. The Code</h3>
 
-<p>We've crafted some handsome templates for you to use. Go ahead and continue to layouts to browse through them. You can easily go back to edit your page before publishing. After publishing your page, you can revisit the page generator and switch to another theme. Your Page content will be preserved if it remained markdown format.</p>
+<p>The code was broken up into 5 main parts. The first part calibrates the light sensor to recognise the correct colour value for black and the correct colour value for white. The code below loops through until both left and right buttons (<code>Sensor(IN_3)</code> and <code>Sensor(IN_2)</code>) have been clicked, capturing the light value at the time they were clicked as black and white respectively. Once the light values have been calibrated the screen prints out the average value, and we are ready to start.</p>
 
-<h3>
-<a name="rather-drive-stick" class="anchor" href="#rather-drive-stick"><span class="octicon octicon-link"></span></a>Rather Drive Stick?</h3>
-
-<p>If you prefer to not use the automatic generator, push a branch named <code>gh-pages</code> to your repository to create a page manually. In addition to supporting regular HTML content, GitHub Pages support Jekyll, a simple, blog aware static site generator written by our own Tom Preston-Werner. Jekyll makes it easy to create site-wide headers and footers without having to copy them across every page. It also offers intelligent blog support and other advanced templating features.</p>
-
-<h3>
-<a name="authors-and-contributors" class="anchor" href="#authors-and-contributors"><span class="octicon octicon-link"></span></a>Authors and Contributors</h3>
-
-<p>You can <a href="https://github.com/blog/821" class="user-mention">@mention</a> a GitHub username to generate a link to their profile. The resulting <code>&lt;a&gt;</code> element will link to the contributor's GitHub Profile. For example: In 2007, Chris Wanstrath (<a href="https://github.com/defunkt" class="user-mention">@defunkt</a>), PJ Hyett (<a href="https://github.com/pjhyett" class="user-mention">@pjhyett</a>), and Tom Preston-Werner (<a href="https://github.com/mojombo" class="user-mention">@mojombo</a>) founded GitHub.</p>
-
-<h3>
-<a name="support-or-contact" class="anchor" href="#support-or-contact"><span class="octicon octicon-link"></span></a>Support or Contact</h3>
-
-<p>Having trouble with Pages? Check out the documentation at <a href="http://help.github.com/pages">http://help.github.com/pages</a> or contact <a href="mailto:support@github.com">support@github.com</a> and we’ll help you sort it out.</p>
+<pre><code>task calibrate_sensors(){
+  int hasBeenCalibrated = 0;
+  while (hasBeenCalibrated &lt; 2){
+    if (Sensor(IN_3) &amp;&amp; hasBeenCalibrated == 0){
+      black = Sensor(IN_1);
+      hasBeenCalibrated = 1;
+      ClearScreen();
+      TextOut(0, 32, "B " + NumToStr(black));
+    }
+    if (Sensor(IN_2) &amp;&amp; hasBeenCalibrated == 1){
+      white = Sensor(IN_1);
+      hasBeenCalibrated = 2;
+      ClearScreen();
+      TextOut(0, 32, "W " + NumToStr(white));
+      Wait(2000);
+    }
+    if (hasBeenCalibrated == 2){
+      average = (black + white) / 2;
+      ClearScreen();
+      TextOut(0, 32, "A " + NumToStr(average));
+    }
+  }
+}
+</code></pre>
       </section>
       <footer>
         <p>This project is maintained by <a href="https://github.com/nickdowse">nickdowse</a></p>
